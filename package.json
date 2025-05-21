@@ -1,0 +1,12 @@
+{
+  "name": "artesanosapp",
+  "version": "1.0.0",
+  "description": "'Aplicacion para la materia Laboratorio 2'",
+  "license": "ISC",
+  "author": "'Francisco Agustin Malbec'",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
