@@ -1,0 +1,84 @@
+<div class="container mt-5">
+    <h1 class="mb-4">Buscar imágenes por etiqueta</h1>
+
+    <form class="row g-3 mb-4" action="/tags" method="get">
+        <div class="col-md-10">
+            <select name="tag" id="tag" class="form-select">
+                {{#each tags}}
+                <option value="{{this.tag}}">{{this.tag}}</option>
+                {{/each}}
+            </select>
+            {{!-- <input type="text" class="form-control" name="q" value="{{query}}"
+                placeholder="Ej: macramé, reciclado..." /> --}}
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
+
+    {{#if imagenes.length}}
+    <h4 class="mb-3">Resultados para: <span class="text-primary">"{{query}}"</span></h4>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {{#each imagenes}}
+        <div class="col">
+            <div class="card h-100">
+                <a href="/images/{{this.id}}" class="text-decoration-none"><img src="/{{this.url}}" class="card-img-top"
+                        alt="{{this.title}}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{this.title}}</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{else if query}}
+    <div class="alert alert-warning mt-4">
+        No se encontraron imágenes para <strong>"{{query}}"</strong>.
+    </div>
+    {{/if}}
+</div>
+<button
+    class="btn btn-danger position-fixed bottom-0 end-0 m-4 shadow rounded-circle d-flex align-items-center justify-content-center"
+    style="width: 60px; height: 60px; z-index: 1050;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNotif">
+    <span class="fs-5 fw-bold">{{notis}}</span>
+</button>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNotif" aria-labelledby="offcanvasNotifLabel">
+    <div class="offcanvas-header">
+        <ul class="list-group">
+            {{#each notifications}}
+            {{#if this.status}}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <img src="/{{this.avatar}}" alt="Avatar" class="rounded-circle" width="40" height="40">
+                    {{#if (compare type "friend")}}
+                    <strong>Solicitud de amistad de:</strong> {{this.usuario_envia}}
+                    {{else}}
+                    <strong>Comentario de:</strong> {{this.usuario_envia}}
+                    {{/if}}
+                </div>
+                <div class="d-flex gap-2">
+                    {{#if (compare type "friend")}}
+                    <form action="/friends/{{this.id}}" method="post" class="d-inline">
+                        <input type="hidden" name="id_user_from" value="{{this.user_id_send}}" />
+                        <input type="hidden" name="id_user_to" value="{{this.user_id_receives}}" />
+                        <button type="submit" class="btn btn-success btn-sm" name="action"
+                            value="accept">Aceptar</button>
+                        <button type="submit" class="btn btn-danger btn-sm" name="action"
+                            value="decline">Rechazar</button>
+                    </form>
+                    {{else}}
+                    <a href="/images/{{this.image}}" class="btn btn-success btn-sm">Ver comentario</a><a
+                        href="/notifications/update/{{this.id}}" class="btn btn-danger btn-sm">X</a>
+                    {{/if}}
+                </div>
+            </li>
+            {{/if}}
+            {{/each}}
+        </ul>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+    </div>
+</div>

@@ -1,0 +1,167 @@
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="mb-3">{{title}}</h1>
+            <img src="/{{user.avatar}}" alt="Avatar de {{user.username}}"
+                class="img-fluid rounded-circle shadow-sm mb-3" width="150" height="150">
+            <p class="lead">Bienvenido a tu perfil, <strong>{{user.username}}</strong>!</p>
+            <p><strong>Nombre:</strong> {{user.first_name}} {{user.last_name}}</p>
+            <p><strong>Email:</strong> {{user.email}}</p>
+            <h3>Estadisticas del perfil</h3>
+            <p>Cantidad de imagenes: {{stats.images}}</p>
+            <p>Cantidad de albums: {{stats.albums}}</p>
+            <p>Comentarios en tus fotos: {{stats.comments}}</p>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{user.id}}">
+                Editar perfil
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pass{{user.id}}">
+                Cambiar contraseña
+            </button>
+        </div>
+        <div class="modal fade" id="{{user.id}}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title fs-5">Editar perfil</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="/users/update/{{user.id}}" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label">Apellido</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Nombre de usuario</label>
+                                <input type="text" class="form-control" id="username" name="username" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="birthdate" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="birthdate" name="birthdate" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="gender" class="form-label">Género</label>
+                                <select name="gender" id="gender" class="form-select">
+                                    <option value="male">Hombre</option>
+                                    <option value="female">Mujer</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="province" class="form-label">Provincia</label>
+                                <input type="text" class="form-control" id="province" name="province">
+                            </div>
+                            <div class="mb-3">
+                                <label for="avatar" class="form-label">Avatar</label>
+                                <input type="file" class="form-control" id="avatar" name="avatar">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="pass{{user.id}}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title fs-5">Cambiar contraseña</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/users/pass/{{user.id}}" method="post">
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Contraseña nueva</label>
+                                <input type="password" name="password" class="form-control" />
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary mb-3">Confirmar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Mis amigos</h3>
+            {{#if friends.length}}
+            <ul class="list-group">
+                {{#each friends}}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="/{{this.avatar}}" alt="Avatar" class="rounded-circle" width="40" height="40">
+                        <span>{{this.amigo}}</span>
+                    </div>
+                    <form action="/friends/delete/{{this.id}}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                </li>
+                {{/each}}
+            </ul>
+
+            {{else}}
+            <p class="text-muted">No tienes amigos.</p>
+            {{/if}}
+        </div>
+    </div>
+</div>
+
+{{!-- <form action="" id="messageForm" class="mt-4">
+    <div class="mb-3">
+        <label for="messageInput" class="form-label">Enviar mensaje</label>
+        <input type="text" class="form-control" id="messageInput" placeholder="Escribe tu mensaje aquí..." required />
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</form> --}}
+<button
+    class="btn btn-danger position-fixed bottom-0 end-0 m-4 shadow rounded-circle d-flex align-items-center justify-content-center"
+    style="width: 60px; height: 60px; z-index: 1050;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNotif">
+    <span class="fs-5 fw-bold">{{notis}}</span>
+</button>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNotif" aria-labelledby="offcanvasNotifLabel">
+    <div class="offcanvas-header">
+        <ul class="list-group">
+            {{#each notifications}}
+            {{#if this.status}}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <img src="/{{this.avatar}}" alt="Avatar" class="rounded-circle" width="40" height="40">
+                    {{#if (compare type "friend")}}
+                    <strong>Solicitud de amistad de:</strong> {{this.usuario_envia}}
+                    {{else}}
+                    <strong>Comentario de:</strong> {{this.usuario_envia}}
+                    {{/if}}
+                </div>
+                <div class="d-flex gap-2">
+                    {{#if (compare type "friend")}}
+                    <form action="/friends/{{this.id}}" method="post" class="d-inline">
+                        <input type="hidden" name="id_user_from" value="{{this.user_id_send}}" />
+                        <input type="hidden" name="id_user_to" value="{{this.user_id_receives}}" />
+                        <button type="submit" class="btn btn-success btn-sm" name="action"
+                            value="accept">Aceptar</button>
+                        <button type="submit" class="btn btn-danger btn-sm" name="action"
+                            value="decline">Rechazar</button>
+                    </form>
+                    {{else}}
+                    <a href="/images/{{this.image}}" class="btn btn-success btn-sm">Ver comentario</a><a
+                        href="/notifications/update/{{this.id}}" class="btn btn-danger btn-sm">X</a>
+                    {{/if}}
+                </div>
+            </li>
+            {{/if}}
+            {{/each}}
+        </ul>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+    </div>
+</div>
